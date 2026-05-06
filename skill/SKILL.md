@@ -60,20 +60,7 @@ Config files that contain real credentials must be private on POSIX systems.
 If loading fails with a file-permissions error, ask the user to run
 `chmod 600 /path/to/email-skill.env`.
 
-Required SMTP/Gmail variables:
-
-```env
-EMAIL_SKILL_PROVIDER=smtp
-EMAIL_SKILL_FROM=you@gmail.com
-EMAIL_SKILL_FROM_NAME=Your Name
-EMAIL_SKILL_ALLOWED_RECIPIENTS=you@gmail.com
-EMAIL_SKILL_SMTP_HOST=smtp.gmail.com
-EMAIL_SKILL_SMTP_PORT=587
-EMAIL_SKILL_SMTP_USER=you@gmail.com
-EMAIL_SKILL_SMTP_PASSWORD=your-google-app-password
-```
-
-For Resend:
+Recommended Resend variables:
 
 ```env
 EMAIL_SKILL_PROVIDER=resend
@@ -82,7 +69,7 @@ EMAIL_SKILL_ALLOWED_RECIPIENTS=your-email@example.com
 EMAIL_SKILL_RESEND_API_KEY=re_xxxxxxxxxxxxxxxxx
 ```
 
-For AWS SES:
+Recommended AWS SES variables:
 
 ```env
 EMAIL_SKILL_PROVIDER=ses
@@ -90,6 +77,23 @@ EMAIL_SKILL_FROM=digests@yourdomain.com
 EMAIL_SKILL_ALLOWED_RECIPIENTS=your-email@example.com
 EMAIL_SKILL_AWS_REGION=us-east-1
 ```
+
+SMTP/Gmail fallback variables:
+
+```env
+EMAIL_SKILL_PROVIDER=smtp
+EMAIL_SKILL_FROM=digests@example.com
+EMAIL_SKILL_FROM_NAME=Your Name
+EMAIL_SKILL_ALLOWED_RECIPIENTS=your-email@example.com
+EMAIL_SKILL_SMTP_HOST=smtp.example.com
+EMAIL_SKILL_SMTP_PORT=587
+EMAIL_SKILL_SMTP_USER=username
+EMAIL_SKILL_SMTP_PASSWORD=password
+```
+
+For Gmail SMTP, treat the app password as a real credential. If it leaks, an
+attacker can send as that Gmail account outside this skill until it is revoked.
+Prefer Resend or AWS SES when possible.
 
 For local testing:
 
@@ -120,7 +124,7 @@ python3 email_skill/send_email.py email_payload.json
 
 The sender supports:
 
-- `EMAIL_SKILL_PROVIDER=smtp` for Gmail and generic SMTP.
 - `EMAIL_SKILL_PROVIDER=resend` for Resend.
 - `EMAIL_SKILL_PROVIDER=ses` for AWS SES through the AWS CLI.
+- `EMAIL_SKILL_PROVIDER=smtp` for Gmail or generic SMTP fallback.
 - `EMAIL_SKILL_PROVIDER=dry-run` for local tests.

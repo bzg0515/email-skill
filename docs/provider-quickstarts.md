@@ -30,24 +30,11 @@ EMAIL_SKILL_FROM_NAME=Email Skill
 EMAIL_SKILL_ALLOWED_RECIPIENTS=your-email@example.com
 ```
 
-## Gmail
+## Recommended Providers
 
-1. Turn on 2-Step Verification in your Google Account.
-2. Create a Google App Password at `https://myaccount.google.com/apppasswords`.
-3. Put the app password in `EMAIL_SKILL_SMTP_PASSWORD`.
-
-```env
-EMAIL_SKILL_PROVIDER=smtp
-EMAIL_SKILL_FROM=you@gmail.com
-EMAIL_SKILL_FROM_NAME=Your Name
-EMAIL_SKILL_ALLOWED_RECIPIENTS=you@gmail.com
-EMAIL_SKILL_SMTP_HOST=smtp.gmail.com
-EMAIL_SKILL_SMTP_PORT=587
-EMAIL_SKILL_SMTP_USER=you@gmail.com
-EMAIL_SKILL_SMTP_PASSWORD=your-16-character-app-password
-```
-
-More detail: [gmail.md](./gmail.md).
+Prefer Resend or AWS SES for real automations. They let you create a dedicated
+sender identity and rotate/revoke an API key or AWS credential without touching
+your personal Gmail account.
 
 ## Resend
 
@@ -79,6 +66,31 @@ EMAIL_SKILL_AWS_REGION=us-east-1
 ```
 
 SES sandbox accounts can only send to verified recipients.
+
+## Gmail SMTP
+
+Use Gmail SMTP only if you accept the app-password risk. A Google app password
+is a real credential: if the env file leaks, someone can send email as you until
+you revoke that app password. Keep `EMAIL_SKILL_ALLOWED_RECIPIENTS` limited to
+your address, but remember the allowlist protects this script, not the stolen
+credential.
+
+1. Turn on 2-Step Verification in your Google Account.
+2. Create a Google App Password at `https://myaccount.google.com/apppasswords`.
+3. Put the app password in `EMAIL_SKILL_SMTP_PASSWORD`.
+
+```env
+EMAIL_SKILL_PROVIDER=smtp
+EMAIL_SKILL_FROM=you@gmail.com
+EMAIL_SKILL_FROM_NAME=Your Name
+EMAIL_SKILL_ALLOWED_RECIPIENTS=you@gmail.com
+EMAIL_SKILL_SMTP_HOST=smtp.gmail.com
+EMAIL_SKILL_SMTP_PORT=587
+EMAIL_SKILL_SMTP_USER=you@gmail.com
+EMAIL_SKILL_SMTP_PASSWORD=your-16-character-app-password
+```
+
+More detail: [gmail.md](./gmail.md).
 
 ## Generic SMTP
 

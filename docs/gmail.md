@@ -1,9 +1,27 @@
-# Gmail Quickstart
+# Gmail SMTP Risks And Setup
 
-Use this if you want Email Skill to send from your Gmail address.
+Prefer Resend or AWS SES for real automations. Use Gmail SMTP only when you are
+comfortable storing a Google app password on the machine running the skill.
 
 Gmail works through SMTP with a Google App Password. Do not use your normal
 Google password.
+
+## Risk Model
+
+A Google app password is a real credential. If someone reads it from
+`email-skill.env`, a backup, a ZIP upload, shell history, or a shared machine,
+they can send email as you until you revoke that app password.
+
+Email Skill still enforces `EMAIL_SKILL_ALLOWED_RECIPIENTS` before it sends,
+but that allowlist only protects sends that go through this script. It cannot
+stop an attacker who stole the app password from using it elsewhere.
+
+If you use Gmail anyway:
+
+- Keep `EMAIL_SKILL_ALLOWED_RECIPIENTS` limited to your own address.
+- Keep `email-skill.env` ignored by git and set to `chmod 600`.
+- Create an app password only for this skill.
+- Revoke the app password immediately if the file may have leaked.
 
 ## 1. Turn On 2-Step Verification
 

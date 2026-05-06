@@ -17,7 +17,7 @@ Use it for things like:
 The skill keeps the sharp edges in code:
 
 - only emails addresses in `EMAIL_SKILL_ALLOWED_RECIPIENTS`
-- sends through SMTP/Gmail, Resend, AWS SES, or dry-run
+- sends through Resend, AWS SES, SMTP/Gmail, or dry-run
 - supports preview-before-send for one-off emails
 - supports direct confirmed sends for automations you already approved
 
@@ -59,7 +59,7 @@ EMAIL_SKILL_ALLOWED_RECIPIENTS=test@example.com
 Pick your sender setup:
 
 - [All provider quickstarts](docs/provider-quickstarts.md)
-- [Gmail Quickstart](docs/gmail.md)
+- [Gmail SMTP risks and setup](docs/gmail.md)
 - [Claude Code guide](docs/claude-code.md)
 - [Claude Cowork guide](docs/claude-cowork.md)
 - [Codex guide](docs/codex.md)
@@ -103,7 +103,7 @@ Full copy-pasteable prompt examples are in [examples](examples).
 | Script | Purpose |
 | --- | --- |
 | `skill/email_skill/check_config.py` | Validate deterministic config and list missing variables. |
-| `skill/email_skill/send_email.py` | Send a confirmed payload through SMTP/Gmail, Resend, AWS SES, or dry-run. |
+| `skill/email_skill/send_email.py` | Send a confirmed payload through Resend, AWS SES, SMTP/Gmail, or dry-run. |
 
 `send_email.py` accepts a JSON file path or reads JSON from stdin.
 `check_config.py` prints either the loaded config summary or a precise missing
@@ -114,10 +114,14 @@ variable list.
 Set `EMAIL_SKILL_PROVIDER` to one of:
 
 - `dry-run` - logs the attempted send to stderr; no credentials required.
-- `resend` - uses `EMAIL_SKILL_RESEND_API_KEY`.
-- `ses` - uses the AWS CLI and `EMAIL_SKILL_AWS_REGION`.
+- `resend` - recommended for most users; uses `EMAIL_SKILL_RESEND_API_KEY`.
+- `ses` - recommended for AWS users; uses the AWS CLI and `EMAIL_SKILL_AWS_REGION`.
 - `smtp` - uses `EMAIL_SKILL_SMTP_HOST`, `EMAIL_SKILL_SMTP_PORT`,
   `EMAIL_SKILL_SMTP_USER`, and `EMAIL_SKILL_SMTP_PASSWORD`.
+
+For Gmail, SMTP requires a Google app password. Treat that app password as a
+real credential: if it leaks, someone can send email as you until you revoke it.
+Prefer Resend or AWS SES for cleaner sender isolation and easier key rotation.
 
 See [docs/provider-quickstarts.md](docs/provider-quickstarts.md).
 

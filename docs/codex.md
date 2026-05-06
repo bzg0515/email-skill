@@ -30,17 +30,14 @@ EMAIL_SKILL_FROM_NAME=Email Skill
 EMAIL_SKILL_ALLOWED_RECIPIENTS=your-email@example.com
 ```
 
-Example Gmail config:
+Example Resend config:
 
 ```env
-EMAIL_SKILL_PROVIDER=smtp
-EMAIL_SKILL_FROM=you@gmail.com
-EMAIL_SKILL_FROM_NAME=Your Name
-EMAIL_SKILL_ALLOWED_RECIPIENTS=you@gmail.com
-EMAIL_SKILL_SMTP_HOST=smtp.gmail.com
-EMAIL_SKILL_SMTP_PORT=587
-EMAIL_SKILL_SMTP_USER=you@gmail.com
-EMAIL_SKILL_SMTP_PASSWORD=your-google-app-password
+EMAIL_SKILL_PROVIDER=resend
+EMAIL_SKILL_FROM=digests@yourdomain.com
+EMAIL_SKILL_FROM_NAME=Email Skill
+EMAIL_SKILL_ALLOWED_RECIPIENTS=your-email@example.com
+EMAIL_SKILL_RESEND_API_KEY=re_xxxxxxxxxxxxxxxxx
 ```
 
 For maximum reliability, launch Codex with an explicit config path:
