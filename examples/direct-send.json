@@ -1,0 +1,5 @@
+{
+  "subject": "Dry-run send from Email Skill",
+  "body": "This is a direct send payload for an already-authorized automation.",
+  "confirmed": true
+}
