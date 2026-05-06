@@ -30,6 +30,7 @@ schedule and the thinking; this skill handles safe email delivery.
 git clone https://github.com/yourname/email-skill
 cd email-skill
 cp skill/email-skill.env.example skill/email-skill.env
+chmod 600 skill/email-skill.env
 ```
 
 Open `email-skill.env` in any text editor:
@@ -140,6 +141,9 @@ Pass JSON on stdin:
 }
 ```
 
+Email bodies are sent as plain text by default. To intentionally send HTML,
+include `"html": true` or `"body_format": "html"` in the payload.
+
 If `recipient` is omitted and exactly one address is configured in
 `EMAIL_SKILL_ALLOWED_RECIPIENTS`, the sender uses that address. If multiple
 addresses are allowlisted, include `recipient` explicitly.
@@ -154,8 +158,9 @@ same folder directly on disk.
 
 ## Local State
 
-Set `EMAIL_SKILL_CONFIG=/path/to/email-skill.env` if the config file is not in
-the current directory.
+By default, the sender reads `email-skill.env` or `.env` only from the installed
+skill directory next to `SKILL.md`. Set `EMAIL_SKILL_CONFIG=/absolute/path/to/email-skill.env`
+to use a config file somewhere else.
 
 ## Repo Layout
 

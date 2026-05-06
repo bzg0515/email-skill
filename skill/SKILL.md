@@ -30,7 +30,9 @@ marketing campaigns, or drafting-only tasks where no send is requested.
 4. Never send to a recipient outside `EMAIL_SKILL_ALLOWED_RECIPIENTS`.
    If the payload omits `recipient` and exactly one address is allowlisted, use
    that address. If multiple addresses are allowlisted, require `recipient`.
-5. Keep email bodies concise and do not include full copyrighted source text.
+5. Send plain text by default. Use HTML only when the payload explicitly
+   includes `html: true` or `body_format: "html"`.
+6. Keep email bodies concise and do not include full copyrighted source text.
 
 ## Configuration
 
@@ -40,19 +42,23 @@ To check configuration, run:
 python3 email_skill/check_config.py
 ```
 
-Run commands from the directory containing this `SKILL.md`. If the payload is
-in another working directory, pass its absolute path to `send_email.py`.
+If the payload is in another working directory, pass its absolute path to
+`send_email.py`.
 
 The skill reads config from:
 
 1. Environment variables already available to the process.
 2. `EMAIL_SKILL_CONFIG=/path/to/email-skill.env`, if set.
-3. `./email-skill.env`, if present.
-4. `./.env`, if present.
+3. `email-skill.env` next to this `SKILL.md`, if present.
+4. `.env` next to this `SKILL.md`, if present.
 
 If configuration is missing, ask the user to set the missing variables. Do not
 search `/Users`, `/var`, `/`, temporary plugin folders, old local session
 outputs, or unrelated project folders.
+
+Config files that contain real credentials must be private on POSIX systems.
+If loading fails with a file-permissions error, ask the user to run
+`chmod 600 /path/to/email-skill.env`.
 
 Required SMTP/Gmail variables:
 

@@ -8,8 +8,12 @@ The skill never searches the filesystem for credentials. It reads only:
 
 1. Process environment.
 2. `EMAIL_SKILL_CONFIG=/path/to/email-skill.env`.
-3. `./email-skill.env`.
-4. `./.env`.
+3. `email-skill.env` next to `SKILL.md`.
+4. `.env` next to `SKILL.md`.
+
+It does not trust the caller's current working directory for default config.
+On POSIX systems, config files containing real provider credentials must not be
+readable by group or other users.
 
 ## Recipient Allowlist
 
@@ -36,6 +40,12 @@ addresses are allowlisted, the payload must include `recipient`.
 
 Use this only when the automation definition itself is the user's approval:
 recipient, purpose, and cadence should already be fixed.
+
+## HTML Emails
+
+Bodies are sent as plain text unless the payload explicitly includes
+`"html": true` or `"body_format": "html"`. The sender does not infer HTML from
+body text.
 
 ## What This Repo Does Not Do
 

@@ -29,6 +29,7 @@ Create a local config file next to `SKILL.md`:
 
 ```bash
 cp ~/.claude/skills/email-skill/email-skill.env.example ~/.claude/skills/email-skill/email-skill.env
+chmod 600 ~/.claude/skills/email-skill/email-skill.env
 nano ~/.claude/skills/email-skill/email-skill.env
 ```
 
@@ -71,11 +72,11 @@ Ask Claude Code:
 Use the email-skill to check its configuration.
 ```
 
-It should run from the installed skill directory:
+It can run the checker from any working directory; default config is loaded
+from the installed skill directory next to `SKILL.md`:
 
 ```bash
-cd ~/.claude/skills/email-skill
-python3 email_skill/check_config.py
+python3 ~/.claude/skills/email-skill/email_skill/check_config.py
 ```
 
 Then ask for a real test:

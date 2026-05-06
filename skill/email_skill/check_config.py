@@ -5,11 +5,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from email_skill.config import configuration_error, load_config, missing_keys, provider_name
+from email_skill.config import (
+    ConfigFilePermissionError,
+    configuration_error,
+    load_config,
+    missing_keys,
+    provider_name,
+)
 
 
 def main():
-    config, loaded_from = load_config()
+    try:
+        config, loaded_from = load_config()
+    except ConfigFilePermissionError as err:
+        print(err, file=sys.stderr)
+        return 1
     missing = missing_keys(config)
     if missing:
         print(configuration_error(missing), file=sys.stderr)

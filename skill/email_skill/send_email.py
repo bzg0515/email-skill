@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import json
-import re
 import smtplib
 import ssl
 import subprocess
@@ -15,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from email_skill.config import (
     allowed_recipients,
+    ConfigFilePermissionError,
     configuration_error,
     load_config,
     missing_keys,
@@ -39,8 +39,12 @@ def validate_payload(payload, config):
     subject = payload.get("subject") or ""
     body = payload.get("body") or ""
     confirmed = payload.get("confirmed") is True
+    body_format = (payload.get("body_format") or "").strip().lower()
+    html = payload.get("html") is True or body_format == "html"
     allowed = allowed_recipients(config)
 
+    if body_format and body_format not in ("text", "html"):
+        raise SystemExit("Payload body_format must be text or html.")
     if not recipient:
         if len(allowed) == 1:
             recipient = allowed[0]
@@ -54,16 +58,16 @@ def validate_payload(payload, config):
         raise SystemExit("Payload must include confirmed=true for automation sends.")
     if recipient.lower() not in allowed:
         raise SystemExit(f"Recipient {recipient} is not in EMAIL_SKILL_ALLOWED_RECIPIENTS.")
-    return recipient, subject, body
+    return recipient, subject, body, html
 
 
-def send_smtp(config, recipient, subject, body):
+def send_smtp(config, recipient, subject, body, html=False):
     msg = EmailMessage()
     msg["From"] = from_header(config)
     msg["To"] = recipient
     msg["Subject"] = subject
 
-    if re.search(r"<[a-zA-Z][\s\S]*>", body):
+    if html:
         msg.set_content("This email contains HTML content.")
         msg.add_alternative(body, subtype="html")
     else:
@@ -84,13 +88,12 @@ def send_smtp(config, recipient, subject, body):
             smtp.send_message(msg)
 
 
-def send_resend(config, recipient, subject, body):
-    looks_html = bool(re.search(r"<[a-zA-Z][\s\S]*>", body))
+def send_resend(config, recipient, subject, body, html=False):
     data = {
         "from": from_header(config),
         "to": [recipient],
         "subject": subject,
-        "html" if looks_html else "text": body,
+        "html" if html else "text": body,
     }
     req = urllib.request.Request(
         "https://api.resend.com/emails",
@@ -108,9 +111,8 @@ def send_resend(config, recipient, subject, body):
         raise SystemExit(err.read().decode("utf-8"))
 
 
-def send_ses(config, recipient, subject, body):
-    looks_html = bool(re.search(r"<[a-zA-Z][\s\S]*>", body))
-    body_key = "Html" if looks_html else "Text"
+def send_ses(config, recipient, subject, body, html=False):
+    body_key = "Html" if html else "Text"
     content = {
         "Simple": {
             "Subject": {"Data": subject, "Charset": "UTF-8"},
@@ -122,7 +124,7 @@ def send_ses(config, recipient, subject, body):
             },
         }
     }
-    if looks_html:
+    if html:
         content["Simple"]["Body"]["Text"] = {
             "Data": "This email contains HTML content.",
             "Charset": "UTF-8",
@@ -161,14 +163,18 @@ def send_ses(config, recipient, subject, body):
 
 
 def main():
-    config, _ = load_config()
+    try:
+        config, _ = load_config()
+    except ConfigFilePermissionError as err:
+        print(err, file=sys.stderr)
+        return 1
     missing = missing_keys(config)
     if missing:
         print(configuration_error(missing), file=sys.stderr)
         return 1
 
     payload = read_payload(sys.argv[1] if len(sys.argv) > 1 else "-")
-    recipient, subject, body = validate_payload(payload, config)
+    recipient, subject, body, html = validate_payload(payload, config)
     provider = provider_name(config)
 
     if provider == "dry-run":
@@ -179,15 +185,15 @@ def main():
         print(body[:1000])
         return 0
     if provider == "smtp":
-        send_smtp(config, recipient, subject, body)
+        send_smtp(config, recipient, subject, body, html)
         print(json.dumps({"ok": True, "status": "sent", "provider": "smtp"}))
         return 0
     if provider == "resend":
-        result = send_resend(config, recipient, subject, body)
+        result = send_resend(config, recipient, subject, body, html)
         print(json.dumps({"ok": True, "status": "sent", "provider": "resend", "result": result}))
         return 0
     if provider == "ses":
-        result = send_ses(config, recipient, subject, body)
+        result = send_ses(config, recipient, subject, body, html)
         print(json.dumps({"ok": True, "status": "sent", "provider": "ses", "result": result}))
         return 0
 

@@ -13,10 +13,14 @@ this order:
 
 1. Environment variables already available to the process.
 2. `EMAIL_SKILL_CONFIG=/path/to/email-skill.env`, if set.
-3. `./email-skill.env`, if present.
-4. `./.env`, if present.
+3. `email-skill.env` next to `SKILL.md`, if present.
+4. `.env` next to `SKILL.md`, if present.
 
 It never searches the filesystem for credentials.
+
+When a config file contains provider credentials, keep it private with
+`chmod 600 /path/to/email-skill.env`. The sender refuses credential files that
+are readable by group or other users on POSIX systems.
 
 Use your real email address in `EMAIL_SKILL_ALLOWED_RECIPIENTS`; do not leave
 placeholder addresses in runnable config. Example payloads omit `recipient`

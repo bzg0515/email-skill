@@ -27,6 +27,8 @@ password. Copy it once; you will not be able to see it again.
 Create `email-skill.env` in the installed skill directory:
 
 ```bash
+cp email-skill.env.example email-skill.env
+chmod 600 email-skill.env
 nano email-skill.env
 ```
 

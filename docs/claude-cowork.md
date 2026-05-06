@@ -27,6 +27,7 @@ From the repo root:
 
 ```bash
 cp skill/email-skill.env.example skill/email-skill.env
+chmod 600 skill/email-skill.env
 nano skill/email-skill.env
 ```
 

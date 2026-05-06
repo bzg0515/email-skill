@@ -10,10 +10,14 @@ The skill reads config from:
 
 1. Environment variables already available to the process.
 2. `EMAIL_SKILL_CONFIG=/path/to/email-skill.env`, if set.
-3. `./email-skill.env`, if present.
-4. `./.env`, if present.
+3. `email-skill.env` next to `SKILL.md`, if present.
+4. `.env` next to `SKILL.md`, if present.
 
 It never searches the filesystem for credentials.
+
+After creating a provider config with real credentials, run
+`chmod 600 /path/to/email-skill.env`. On POSIX systems, the sender refuses
+credential files that are readable by group or other users.
 
 ## Dry Run
 

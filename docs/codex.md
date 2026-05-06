@@ -17,6 +17,7 @@ Restart Codex after installing a new skill.
 
 ```bash
 cp ~/.codex/skills/email-skill/email-skill.env.example ~/.codex/skills/email-skill/email-skill.env
+chmod 600 ~/.codex/skills/email-skill/email-skill.env
 nano ~/.codex/skills/email-skill/email-skill.env
 ```
 
@@ -57,7 +58,8 @@ Invoke the skill with `$email-skill` or ask naturally:
 $email-skill Send me a short test email.
 ```
 
-Codex should run from the installed skill directory:
+Codex can run the sender from any working directory; default config is loaded
+from the installed skill directory next to `SKILL.md`:
 
 ```bash
 cd ~/.codex/skills/email-skill
@@ -75,8 +77,7 @@ Use a prompt like:
 ```text
 Every Friday at 9am, fetch the Daring Fireball feed, summarize the most useful
 items, then use $email-skill to email the digest to my allowlisted address.
-Run the sender from /Users/you/.codex/skills/email-skill and use
-EMAIL_SKILL_CONFIG=/Users/you/.codex/skills/email-skill/email-skill.env.
+Use EMAIL_SKILL_CONFIG=/Users/you/.codex/skills/email-skill/email-skill.env.
 ```
 
 If your Codex environment cannot access your local skill folder or local env
