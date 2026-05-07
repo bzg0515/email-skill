@@ -92,8 +92,9 @@ EMAIL_SKILL_SMTP_PASSWORD=password
 ```
 
 For Gmail SMTP, treat the app password as a real credential. If it leaks, an
-attacker can send as that Gmail account outside this skill until it is revoked.
-Prefer Resend or AWS SES when possible.
+attacker can send as that Gmail account outside this skill until it is revoked,
+and may be able to read/download mail through IMAP or POP if those protocols are
+enabled. Prefer Resend or AWS SES when possible.
 
 For local testing:
 

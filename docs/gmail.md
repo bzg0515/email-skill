@@ -10,7 +10,9 @@ Google password.
 
 A Google app password is a real credential. If someone reads it from
 `email-skill.env`, a backup, a ZIP upload, shell history, or a shared machine,
-they can send email as you until you revoke that app password.
+they can send email as you until you revoke that app password. Depending on
+your Gmail settings, the same app password may also allow IMAP or POP access to
+read or download mail.
 
 Email Skill still enforces `EMAIL_SKILL_ALLOWED_RECIPIENTS` before it sends,
 but that allowlist only protects sends that go through this script. It cannot

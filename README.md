@@ -24,6 +24,36 @@ The skill keeps the sharp edges in code:
 No MCP server. No HTTP API. No scheduler daemon. Your AI tool handles the
 schedule and the thinking; this skill handles safe email delivery.
 
+## Security Model
+
+Email Skill is designed to reduce accidental or prompt-driven email mistakes,
+not to hide credentials from a fully trusted local AI agent.
+
+What it protects against:
+
+- sending to a recipient outside `EMAIL_SKILL_ALLOWED_RECIPIENTS`
+- sending without an explicit `confirmed: true` payload
+- accidentally loading credentials from an unrelated working directory
+- accidentally committing common local env files, when `.gitignore` is kept
+
+What it does not protect against:
+
+- a compromised machine
+- malware or another local process reading your files
+- an AI agent with permission to read the env file or run arbitrary commands
+- a stolen provider credential being used outside this script
+
+Treat every provider secret in `email-skill.env` as sensitive. Keep the file
+private with `chmod 600`, do not put it in shared repos, do not upload it in
+public ZIPs, and rotate/revoke credentials if it may have leaked.
+
+For real automations, prefer Resend or AWS SES. They let you use a dedicated
+sender identity and a revocable API key or AWS credential. Gmail SMTP works, but
+it requires a Google app password; if that password leaks, someone may be able
+to send mail as your Gmail account and may be able to read/download mail through
+IMAP or POP if those protocols are enabled. The allowlist protects this script,
+not the credential itself.
+
 ## Quickstart
 
 ```bash
@@ -120,7 +150,8 @@ Set `EMAIL_SKILL_PROVIDER` to one of:
   `EMAIL_SKILL_SMTP_USER`, and `EMAIL_SKILL_SMTP_PASSWORD`.
 
 For Gmail, SMTP requires a Google app password. Treat that app password as a
-real credential: if it leaks, someone can send email as you until you revoke it.
+real credential: if it leaks, someone may be able to send email as you and may
+be able to read/download mail through IMAP or POP if those protocols are enabled.
 Prefer Resend or AWS SES for cleaner sender isolation and easier key rotation.
 
 See [docs/provider-quickstarts.md](docs/provider-quickstarts.md).

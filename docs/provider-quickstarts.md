@@ -70,10 +70,10 @@ SES sandbox accounts can only send to verified recipients.
 ## Gmail SMTP
 
 Use Gmail SMTP only if you accept the app-password risk. A Google app password
-is a real credential: if the env file leaks, someone can send email as you until
-you revoke that app password. Keep `EMAIL_SKILL_ALLOWED_RECIPIENTS` limited to
-your address, but remember the allowlist protects this script, not the stolen
-credential.
+is a real credential: if the env file leaks, someone can send email as you and
+may be able to read/download mail through IMAP or POP if those protocols are
+enabled. Keep `EMAIL_SKILL_ALLOWED_RECIPIENTS` limited to your address, but
+remember the allowlist protects this script, not the stolen credential.
 
 1. Turn on 2-Step Verification in your Google Account.
 2. Create a Google App Password at `https://myaccount.google.com/apppasswords`.
